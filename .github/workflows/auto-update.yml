@@ -2,14 +2,14 @@ name: Auto Daily Commit
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # runs every day at midnight (UTC)
+    - cron: '0 0 * * *'  # runs every day at midnight UTC
   workflow_dispatch:
 
 jobs:
   auto-commit:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # allow workflow to push changes
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -17,14 +17,16 @@ jobs:
 
       - name: Make a small change
         run: |
-          echo "Last update: $(date)" > update-log.txt
+          echo "Last update: $(date -u)" > update-log.txt
 
       - name: Commit changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: daily update $(date)" || echo "No changes to commit"
+          git config --global user.name "gitpushfrances"
+          git config --global user.email "johnfrancesquiminaleseder@gmail.com"
+          git add update-log.txt
+          git commit -m "chore: daily auto-update $(date -u)" || echo "No changes to commit"
 
       - name: Push changes
         run: git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
